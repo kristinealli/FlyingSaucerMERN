@@ -66,14 +66,34 @@ const teaSchema = new mongoose.Schema(
     	},
     	favorite: {
     	    type: Boolean,
-    	    required: true,
+    	    required: false,
     	    default: false
-    	}
+    	},
+    	inCollection: {
+    	    type: Boolean,
+    	    required: true,
+    	    default: true
+    	}, 
+    	notes: {
+    	    type: String,
+    	    required: false
+    	},
+    	rating: {
+    	    type: Number,
+    	    required: false,
+    	    min: 0,
+    	    max: 5
+    	},
+    	caffeineContent: {
+    	    type: String,
+    	    required: false,
+    	    enum: ['High', 'Medium', 'Low', 'None']
+    	},
     },
     	{ timestamps: true}
 );
 
-// Pre-save hook to set default temperatures for different types of tea
+// Pre-save hook to set defaults for different types of tea
 teaSchema.pre('save', function(next) {
     const defaultTemperatures = {
         'White': '150-155',
@@ -90,6 +110,15 @@ teaSchema.pre('save', function(next) {
         'Black': '2-3',
         'Herbal': '3-6'
     };
+    
+    const defaultCaffeineContent = {
+        'White': 'Low',
+        'Green': 'Low',
+        'Oolong': 'Medium',
+        'Black': 'High',
+        'Herbal': 'None'
+    };
+    
     // Set default temperature if not provided
     if (defaultTemperatures[this.typeOfTea] && !this.brewingInfo.waterTemp.value) {
         this.brewingInfo.waterTemp.value = defaultTemperatures[this.typeOfTea];
@@ -105,10 +134,17 @@ teaSchema.pre('save', function(next) {
         this.brewingInfo.teaAmountPerCup.value = 1; 
         this.brewingInfo.teaAmountPerCup.unit = 'teaspoon'; 
     }
+    // Set default caffeine content if not provided
+    if (defaultCaffeineContent[this.typeOfTea] && !this.caffeineContent) {
+        this.caffeineContent = defaultCaffeineContent[this.typeOfTea];
+    }
     next();
 });
 
 teaSchema.index({typeOfTea: 1 });
 teaSchema.index({sourceName: 1 });
+teaSchema.index({favorite: 1 });
+teaSchema.index({inCollection: 1 });
+teaSchema.index({caffeineContent: 1 });
 
 export const Tea = mongoose.model("Tea", teaSchema);

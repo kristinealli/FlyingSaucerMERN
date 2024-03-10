@@ -14,6 +14,12 @@ content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
         'galaxy-blue': '#2b2d42',
         'nebula-pink': '#ef476f',
         'orbit-blue': '#073b4c',
+        'space': '#0a0a32', // Deep space navy
+        'nebula': '#5b4b8a', // Dark purple for the larger planet
+        'galaxy': '#9d7bb5', // Lighter purple for the smaller planets
+        'stardust': '#ffaec0', // Pinkish accents on planets
+        'moonlight': '#ced4e6', // Light blue for teacup designs
+        'cosmic-tea': '#a2845e' // Cream/beige for highlights
       },
     },
   },

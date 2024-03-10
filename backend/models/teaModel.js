@@ -71,7 +71,7 @@ const teaSchema = new mongoose.Schema(
     	},
     	inCollection: {
     	    type: Boolean,
-    	    required: true,
+    	    required: false,
     	    default: true
     	}, 
     	notes: {

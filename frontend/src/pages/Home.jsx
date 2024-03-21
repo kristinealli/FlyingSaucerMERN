@@ -28,25 +28,27 @@ const Home = () => {
     }, []);
 
     return (
-        <div className='p-4'>
-            <div className='flex justify-center items-center gap-x-4'>
+        <div className="bg-space min-h-screen p-4 text-moonlight">
+            <div className='flex justify-center items-center gap-x-4 mb-8'>
                 <button
-                    className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
+                    className={`px-4 py-2 rounded-lg ${showType === 'table' ? 'bg-stardust text-white' : 'bg-galaxy hover:bg-nebula'
+                        }`}
                     onClick={() => setShowType('table')}
                 >
                     Table
                 </button>
                 <button
-                    className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
+                    className={`px-4 py-2 rounded-lg ${showType === 'card' ? 'bg-stardust text-white' : 'bg-galaxy hover:bg-nebula'
+                        }`}
                     onClick={() => setShowType('card')}
                 >
                     Card
                 </button>
             </div>
-            <div className='flex justify-between items-center'>
-                <h1 className='text-3xl my-8'>Teas List</h1>
-                <Link to='/teas/create'>
-                    <MdOutlineAddBox className='text-sky-800 text-4xl' />
+            <div className=' py-6 flex justify-between items-center'>
+                <h1 className='text-6xl text-galaxy font-serif text-center'>Your Teas</h1>
+                <Link to='/teas/create' className='text-stardust hover:text-nebula'>
+                    <MdOutlineAddBox className='text-4xl' />
                 </Link>
             </div>
             {loading ? (

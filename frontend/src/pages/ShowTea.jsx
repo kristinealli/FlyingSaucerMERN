@@ -24,46 +24,38 @@ const ShowTea = () => {
     }, []);
 
     return (
-        <div className='p-4'>
+        <div className="min-h-screen bg-space flex flex-col items-center pt-8">
             <BackButton />
-            <h1 className='text-3xl my-4'>Show Tea</h1>
             {loading ? (
                 <Spinner />
             ) : (
-                <div className='flex flex-col border-2 border-sky-400 rounded-xl w-fit p-4'>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-gray-500'>Id</span>
-                        <span>{tea._id}</span>
-                    </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-gray-500'>
-                            Tea:
-                        </span>
-                        <span>{tea.teaName}</span>
-                    </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-gray-500'>
-                            Source
-                        </span>
-                        <span>{tea.sourceName}</span>
-                    </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-gray-500'>
-                            Type of Tea
-                        </span>
-                        <span>{tea.typeOfTea}</span>
-                    </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-gray-500'>
-                            Create Time
-                        </span>
-                        <span>{new Date(tea.createdAt).toString()}</span>
-                    </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-gray-500'>
-                            Last Update Time
-                        </span>
-                        <span>{new Date(tea.updatedAt).toString()}</span>
+                <div className="max-w-xl w-full p-6 bg-moonlight rounded-lg shadow-md">
+                    <h1 className="text-4xl text-galaxy mb-4">Show Tea</h1>
+                    <div className="space-y-4">
+                        <div className="flex justify-between">
+                            <span className="text-lg text-nebula">Id:</span>
+                            <span className="text-lg text-cosmic-tea">{tea._id}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-lg text-nebula">Tea Name:</span>
+                            <span className="text-lg text-cosmic-tea">{tea.teaName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-lg text-nebula">Source:</span>
+                            <span className="text-lg text-cosmic-tea">{tea.sourceName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-lg text-nebula">Type of Tea:</span>
+                            <span className="text-lg text-cosmic-tea">{tea.typeOfTea}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-lg text-nebula">Create Time:</span>
+                            <span className="text-lg text-cosmic-tea">{new Date(tea.createdAt).toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-lg text-nebula">Last Update Time:</span>
+                            <span className="text-lg text-cosmic-tea">{new Date(tea.updatedAt).toLocaleString()}</span>
+                        </div>
                     </div>
                 </div>
             )}

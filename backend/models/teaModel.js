@@ -58,7 +58,7 @@ const teaSchema = new mongoose.Schema(
     	typeOfTea: {
     		type: String,
     		required: true,
-    		enum: ["Green", "Black", "Herbal", "Oolong", "White", "Puerh", "Other"],
+    		enum: ["Green", "Black", "Herbal", "Oolong", "White"],
     	},
     	description: {
     		type: String,

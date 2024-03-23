@@ -1,40 +1,59 @@
-import { AiOutlineClose } from 'react-icons/ai';
-import { PiBookOpenTextLight } from 'react-icons/pi';
-import { BiUserCircle } from 'react-icons/bi';
+import { AiOutlineClose } from "react-icons/ai";
+import bkgrd from '../../assets/images/flyingsaucers.jpg';
 
 const TeaModal = ({ tea, onClose }) => {
-    return (
-        <div
-            className='fixed bg-black bg-opacity-60 top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center'
-            onClick={onClose}
-        >
-            <div
-                onClick={(event) => event.stopPropagation()}
-                className='w-[600px] max-w-full h-[400px] bg-white rounded-xl p-4 flex flex-col relative'
-            >
-                <AiOutlineClose
-                    className='absolute right-6 top-6 text-3xl text-red-600 cursor-pointer'
-                    onClick={onClose}
-                />
-                <h2 className='w-fit px-4 py-1 bg-red-300 rounded-lg'>
-                    {tea.typeOfTea}
-                </h2>
-                <h4 className='my-2 text-gray-500'>{tea._id}</h4>
-                <div className='flex justify-start items-center gap-x-2'>
-                    <PiBookOpenTextLight className='text-red-300 text-2xl' />
-                    <h2 className='my-1'>{tea.teaName}</h2>
-                </div>
-                <div className='flex justify-start items-center gap-x-2'>
-                    <BiUserCircle className='text-red-300 text-2xl' />
-                    <h2 className='my-1'>{tea.sourceName}</h2>
-                </div>
-                <p className='mt-4'>Tea Summary</p>
-                <p className='my-2'>
-                    Description Here
-                </p>
-            </div>
-        </div>
-    );
+	return (
+		<div
+			className="fixed inset-0 bg-[#0a0a23] bg-opacity-60 z-50 flex justify-center items-center"
+			onClick={onClose}
+		>
+			<div
+				onClick={(event) => event.stopPropagation()}
+				className="w-[600px] max-w-full rounded-xl overflow-hidden relative shadow-lg border border-gray-500"
+				style={{
+					backgroundImage: `url(${bkgrd})`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+					backdropFilter: 'blur(10px)',
+				}}
+			>
+				{/* Close Icon */}
+				<AiOutlineClose
+					className="absolute right-6 top-4 text-3xl text-white cursor-pointer hover:text-gray-300 z-20"
+					onClick={onClose}
+				/>
+
+				{/* Overlay Film */}
+				<div className="absolute rounded-xl inset-0 bg-gradient-to-br from-[white] to-[#170782cc]"></div>
+
+				{/* Content Container */}
+				<div className="flex flex-col justify-center items-center h-full p-8 relative z-10 text-white">
+					<h1 className="text-2xl font-bold mb-2 text-center text-[#5f378d]">How to Prepare</h1>
+					<h2 className="text-4xl mb-5 text-center">{tea.teaName} <span className="text-[#5f378d]"> by </span>{tea.sourceName}</h2>
+					<div className="grid grid-cols-3 gap-4 text-md w-full">
+						<div>
+							<strong className="block text-center">Water Temperature</strong>
+							<p className="text-center">{tea.brewingInfo.waterTemp.value} {tea.brewingInfo.waterTemp.unit}</p>
+						</div>
+						<div>
+							<strong className="block text-center">Tea Amount Per Cup</strong>
+							<p className="text-center">{tea.brewingInfo.teaAmountPerCup.value} {tea.brewingInfo.teaAmountPerCup.unit}</p>
+						</div>
+						<div>
+							<strong className="block text-center">Steep Time</strong>
+							<p className="text-center">{tea.brewingInfo.steepTime.value} {tea.brewingInfo.steepTime.unit}</p>
+						</div>
+						{tea.notes && (
+							<div className="col-span-3 mt-4">
+								<strong className="block text-center">Notes</strong>
+								<p className="text-center">{tea.notes}</p>
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default TeaModal;

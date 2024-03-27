@@ -1,11 +1,11 @@
 const DisplayField = ({ label, value }) => {
-    // Helper function to render complex object values
+    // Helper function to render complex object v
     const renderComplexValue = (obj) => (
-        <div className="ml-4 mt-2 bg-galaxy p-2 rounded-lg">
+        <div className="flex-grow ml-4 mt-2 bg-moonlight p-2 rounded-lg">
             {Object.entries(obj).map(([key, val]) => (
                 <div key={key} className="flex justify-between items-center py-1">
-                    <span className="text-sm font-medium text-white">{key}:</span>
-                    <span className="text-sm text-white">
+                    <span className="text-sm font-medium text-black">{key}:</span>
+                    <span className="text-sm text-black">
                         {typeof val === 'object' && val !== null ? `${val.value} ${val.unit}` : val}
                     </span>
                 </div>

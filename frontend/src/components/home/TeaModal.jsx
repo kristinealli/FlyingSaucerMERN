@@ -24,12 +24,14 @@ const TeaModal = ({ tea, onClose }) => {
 				/>
 
 				{/* Overlay Film */}
-				<div className="absolute rounded-xl inset-0 bg-gradient-to-br from-[white] to-[#170782cc]"></div>
+				<div className="absolute rounded-xl inset-0" style={{
+					background: 'linear-gradient(135deg, #1B2849 0%, #393550 25%, #073b4c 50%, #EBB6C9 75%, #ced4e6 100%)', opacity: '0.7'
+				}}></div>
 
 				{/* Content Container */}
 				<div className="flex flex-col justify-center items-center h-full p-8 relative z-10 text-white">
-					<h1 className="text-2xl font-bold mb-2 text-center text-[#5f378d]">How to Prepare</h1>
-					<h2 className="text-4xl mb-5 text-center">{tea.teaName} <span className="text-[#5f378d]"> by </span>{tea.sourceName}</h2>
+					<h1 className="text-2xl font-bold mb-2 text-center text-[#EBB6C9]">How to Prepare</h1>
+					<h2 className="text-2xl font-mono mb-5 text-center">{tea.teaName} <span className="text-[#EBB6C9]"> by </span>{tea.sourceName}</h2>
 					<div className="grid grid-cols-3 gap-4 text-md w-full">
 						<div>
 							<strong className="block text-center">Water Temperature</strong>

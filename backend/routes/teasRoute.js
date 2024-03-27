@@ -60,6 +60,31 @@ router.get("/:id", async (request, response) => {
 	}
 });
 
+// Update a tea's favorite status
+router.put("/:id/favorite", async (request, response) => {
+    try {
+        const { id } = request.params;
+        const { favorite } = request.body; // Expecting favorite to be a boolean
+
+        if (typeof favorite === "undefined") {
+            return response.status(400).send({
+                message: "Please provide favorite status.",
+            });
+        }
+
+        const result = await Tea.findByIdAndUpdate(id, { favorite: favorite }, { new: true });
+
+        if (!result) {
+            return response.status(404).json({ message: "Tea not found" });
+        }
+
+        return response.status(200).send({ message: "Favorite status updated successfully", tea: result });
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
+
 // Update a Tea
 router.put("/:id", async (request, response) => {
 	try {

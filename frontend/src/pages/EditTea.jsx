@@ -1,103 +1,209 @@
-import React, { useState, useEffect } from "react";
-
-import BackButton from "../components/BackButton";
-import Spinner from "../components/Spinner";
-
-import axios from "axios";
-
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useSnackbar } from 'notistack';
 
+import BackButton from '../components/BackButton';
+import Spinner from '../components/Spinner';
+import bkgrd from '../assets/images/teashop.jpg';
+
 const EditTea = () => {
-    const [title, setTitle] = useState("");
-    const [author, setAuthor] = useState("");
-    const [publishYear, setPublishYear] = useState("");
+    const [tea, setTea] = useState({
+        teaName: '',
+        sourceName: '',
+        sourceLink: '',
+        brewingInfo: {
+            waterTemp: { value: '', unit: 'C' },
+            teaAmountPerCup: { value: '', unit: 'grams' },
+            steepTime: { value: '', unit: 'minutes' },
+        },
+        typeOfTea: '',
+        description: '',
+        favorite: false,
+        inCollection: false,
+        notes: '',
+        rating: 0,
+        caffeineContent: '',
+    });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { id } = useParams();
     const { enqueueSnackbar } = useSnackbar();
+    const { id } = useParams();
 
     useEffect(() => {
         setLoading(true);
-        axios
-            .get(`http://localhost:5555/teas/${id}`)
+        axios.get(`http://localhost:5555/teas/${id}`)
             .then((response) => {
-                setAuthor(response.data.author);
-                setPublishYear(response.data.publishYear);
-                setTitle(response.data.title);
+                setTea(response.data);
                 setLoading(false);
             })
             .catch((error) => {
                 setLoading(false);
-                alert("An error happened. Please Chack console");
-                console.log(error);
+                console.error(error);
+                enqueueSnackbar('Failed to fetch tea details', { variant: 'error' });
             });
-    }, []);
+    }, [id, enqueueSnackbar]);
 
-    const handleEditTea = () => {
-        const data = {
-            title,
-            author,
-            publishYear,
-        };
+    const handleInputChange = (event) => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        if (name.includes('.')) {
+            const keys = name.split('.');
+            setTea(prevTea => ({
+                ...prevTea,
+                [keys[0]]: {
+                    ...prevTea[keys[0]],
+                    [keys[1]]: { ...prevTea[keys[0]][keys[1]], [keys[2]]: value },
+                },
+            }));
+        } else {
+            setTea(prevTea => ({ ...prevTea, [name]: value }));
+        }
+    };
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         setLoading(true);
-        axios
-            .put(`http://localhost:5555/teas/${id}`, data)
-            .then(() => {
-                setLoading(false);
-                enqueueSnackbar("Tea Edited successfully", {
-                    variant: "success",
-                });
-                navigate("/");
-            })
-            .catch((error) => {
-                setLoading(false);
-                enqueueSnackbar("Error", { variant: "error" });
-                console.log(error);
-            });
+        try {
+            await axios.put(`http://localhost:5555/teas/${id}`, tea);
+            enqueueSnackbar('Tea updated successfully', { variant: 'success' });
+            navigate(-1); // Go back to the previous page
+        } catch (error) {
+            console.error(error);
+            enqueueSnackbar('Failed to update tea', { variant: 'error' });
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const toggleBrewingInfo = () => {
+        setShowBrewingInfo(prevState => !prevState);
     };
 
+    const fieldOrder = [
+        'teaName',
+        'sourceName',
+        'sourceLink',
+        'typeOfTea',
+        'brewingInfo.waterTemp',
+        'brewingInfo.teaAmountPerCup',
+        'brewingInfo.steepTime',
+        'description',
+        'favorite',
+        'inCollection',
+        'notes',
+        'rating',
+        'caffeineContent',
+    ];
+
+
+    if (loading) return <Spinner />;
+
     return (
-        <div className='p-4'>
+        <div className="min-h-screen flex flex-col items-center pt-8"
+            style={{
+                backgroundImage: `url(${bkgrd})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+                backdropFilter: 'blur(10px)',
+            }}>
             <BackButton />
-            <h1 className='text-3xl my-4'>Edit Tea</h1>
-            {loading ? <Spinner /> : ""}
-            <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
-                <div className='my-4'>
-                    <label className='text-xl mr-4 text-gray-500'>Title</label>
-                    <input
-                        type='text'
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className='border-2 border-gray-500 px-4 py-2 w-full'
-                    />
+            <form className="max-w-4xl w-full p-8 mt-4 rounded-lg shadow-lg bg-moonlight" onSubmit={handleSubmit}>
+                <h1 className="text-3xl font-semibold text-center font-mono text-galaxy mb-6">Edit Tea Details</h1>
+                <div className="space-y-6">
+                    {fieldOrder.map(field => {
+                        // Handling nested fields (brewingInfo)
+                        if (field.includes('.')) {
+                            const [parentKey, childKey] = field.split('.');
+                            const value = tea[parentKey][childKey].value;
+                            return (
+                                <div key={field}>
+                                    <label className="block text-sm font-medium text-gray-700 capitalize">
+                                        {`${parentKey} ${childKey}`}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name={`${parentKey}.${childKey}.value`}
+                                        value={value}
+                                        onChange={handleInputChange}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    />
+                                </div>
+                            );
+                        }
+                        // Handling top-level fields
+                        const value = tea[field];
+                        if (field === 'typeOfTea') {
+                            return (
+                                <div key={field}>
+                                    <label className="block text-sm font-medium text-gray-700 capitalize">
+                                        {field}
+                                    </label>
+                                    <select
+                                        name={field}
+                                        value={value}
+                                        onChange={handleInputChange}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    >
+                                        {['Green', 'Black', 'Herbal', 'Oolong', 'White'].map(option => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            );
+                        }
+                        
+                        if (field === 'caffeineContent') {
+                            return (
+                                <div key={field}>
+                                    <label className="block text-sm font-medium text-gray-700 capitalize">
+                                        {field}
+                                    </label>
+                                    <select
+                                        name={field}
+                                        value={value}
+                                        onChange={handleInputChange}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    >
+                                        {['High', 'Medium', 'Low', 'None'].map(option => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            );
+                        }
+
+                        if (typeof value !== 'object') {
+                            return (
+                                <div key={field}>
+                                    <label className="block text-sm font-medium text-gray-700 capitalize">
+                                        {field}
+                                    </label>
+                                    <input
+                                        type={field === 'favorite' || field === 'inCollection' ? 'checkbox' : 'text'}
+                                        name={field}
+                                        value={field === 'favorite' || field === 'inCollection' ? undefined : value}
+                                        checked={field === 'favorite' || field === 'inCollection' ? value : undefined}
+                                        onChange={handleInputChange}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    />
+                                </div>
+                            );
+                        }
+                        return null; 
+                    })}
                 </div>
-                <div className='my-4'>
-                    <label className='text-xl mr-4 text-gray-500'>Author</label>
-                    <input
-                        type='text'
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        className='border-2 border-gray-500 px-4 py-2  w-full '
-                    />
-                </div>
-                <div className='my-4'>
-                    <label className='text-xl mr-4 text-gray-500'>
-                        Publish Year
-                    </label>
-                    <input
-                        type='number'
-                        value={publishYear}
-                        onChange={(e) => setPublishYear(e.target.value)}
-                        className='border-2 border-gray-500 px-4 py-2  w-full '
-                    />
-                </div>
-                <button className='p-2 bg-sky-300 m-8' onClick={handleEditTea}>
-                    Save
+                <div className="flex justify-center mt-4">
+                <button type="submit" className="inline-flex justify-center my-4 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Save Changes
                 </button>
-            </div>
+                </div>
+            </form>
         </div>
+
     );
 };
+
 
 export default EditTea;
